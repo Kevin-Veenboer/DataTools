@@ -57,3 +57,24 @@ def dict_to_hdf5(data_dict, file_path):
                 exec(f"{col[0]} = pt.Float64Col()")
             else:
                 exec(f"{col[0]} = pt.StringCol()")
+
+    # Create the table (group creation not implemented yet so always puts it in root) (might want to add table naming as well)
+    table = h5file.create_table(h5file.root, "Table", Description)
+
+    # Populate the table with data
+    for idx in range(value_length):
+        row = table.row
+
+        # loop through all columns, the keys can now be used as column identifiers
+        for col in data_items:
+            row[col[0]] = col[1][idx]
+
+        row.append()
+
+    # Save table
+    table.flush()
+
+    ## SECTION FOR ATTRIBUTE ADDING (not implemented yet ...)
+
+    # Closing the file
+    pt.file._open_files.close_all()
