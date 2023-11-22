@@ -2,6 +2,19 @@ import tables as pt
 from os import path
 
 
+def type_check(data_list):
+    data_type = None
+    for item in data_list:
+        # first time round just set the data type
+        if not data_type:
+            data_type = type(item)
+        # if some types mismatch just set all to strings
+        if data_type != type(item):
+            return str
+    # if all match then return the type
+    return data_type
+
+
 def dict_to_hdf5(data_dict, file_path):
     # check if file path is valid and open the file
     assert path.exists(file_path), f"{file_path} is not a valid file path"
@@ -29,5 +42,18 @@ def dict_to_hdf5(data_dict, file_path):
         # storing data in the data_list
         data_items.append((key, value))
 
+    # Make the description for the table
     class Description(pt.IsDescription):
-        pass
+        for col in data_items:
+            # get type present in list
+            type_to_set = type_check(col[1])
+
+            # set column type acordingly
+            if type_to_set == bool:
+                exec(f"{col[0]} = pt.BoolCol()")
+            elif type_to_set == int:
+                exec(f"{col[0]} = pt.Int64Col()")
+            elif type_to_set == float:
+                exec(f"{col[0]} = pt.Float64Col()")
+            else:
+                exec(f"{col[0]} = pt.StringCol()")
