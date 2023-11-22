@@ -2,11 +2,12 @@
 name = "datatools"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Fill Later"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+tables = "^3.9.1"
 
 
 [build-system]
